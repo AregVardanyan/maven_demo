@@ -7,6 +7,7 @@ import com.example.maven_demo.manager.impl.UserManagerImpl;
 import com.example.maven_demo.models.Base;
 import com.example.maven_demo.models.Book;
 import com.example.maven_demo.models.User;
+import com.example.maven_demo.models.UserBookJoin;
 import com.example.maven_demo.models.enums.Gender;
 
 import java.util.ArrayList;
@@ -103,6 +104,7 @@ public class Application {
         System.out.println("For logout press 1");
         System.out.println("For add new book press 2");
         System.out.println("For view books press 3");
+        System.out.println("For all books press 4");
         String command = scanner.nextLine();
         switch (command) {
             case "1": {
@@ -114,6 +116,9 @@ public class Application {
             }
             case "3": {
                 userBooks();
+            }
+            case "4": {
+                allBooks();
             }
             default:{
                 userHome();
@@ -135,7 +140,13 @@ public class Application {
         System.out.println(book);
         userHome();
     }
-
+    private void allBooks(){
+        ArrayList<UserBookJoin> books = bookManager.getAllBooks();
+        for(UserBookJoin book: books){
+            System.out.println(book.toString());
+        }
+        userHome();
+    }
     private void userBooks(){
         ArrayList<Book> books = bookManager.getByUser(currentUser);
         for(Book book: books){
