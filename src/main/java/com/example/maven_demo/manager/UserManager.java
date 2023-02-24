@@ -1,17 +1,17 @@
 package com.example.maven_demo.manager;
 
-import com.example.maven_demo.models.User;
+import com.example.maven_demo.models.Doctor;
 
 public interface UserManager {
 
     boolean existByEmail(String email);
 
-    User save(User user);
+    Doctor save(Doctor user);
 
-    User getByEmailAndPassword(String email,
-                               String password);
+    Doctor getByEmailAndPassword(String email,
+                                 String password);
 
-    User getById(int id);
+    Doctor getById(int id);
 
-    void update(User user);
+    void update(Doctor user);
 }

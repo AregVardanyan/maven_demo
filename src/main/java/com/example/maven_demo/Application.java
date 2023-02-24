@@ -1,56 +1,73 @@
 package com.example.maven_demo;
 
-import com.example.maven_demo.manager.BookManager;
-import com.example.maven_demo.manager.UserManager;
-import com.example.maven_demo.manager.impl.BookManagerImpl;
-import com.example.maven_demo.manager.impl.UserManagerImpl;
-import com.example.maven_demo.models.Base;
-import com.example.maven_demo.models.Book;
-import com.example.maven_demo.models.User;
-import com.example.maven_demo.models.UserBookJoin;
+import com.example.maven_demo.manager.DemandManager;
+import com.example.maven_demo.manager.DoctorManager;
+import com.example.maven_demo.manager.PacientManager;
+import com.example.maven_demo.manager.impl.DemandManagerImpl;
+import com.example.maven_demo.manager.impl.DoctorManagerImpl;
+import com.example.maven_demo.manager.impl.PacientManagerImpl;
+import com.example.maven_demo.models.Doctor;
+import com.example.maven_demo.models.Pacient;
+import com.example.maven_demo.models.TimeInterval;
 import com.example.maven_demo.models.enums.Gender;
+import com.example.maven_demo.models.enums.WorkStatus;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Application {
 
-    private User currentUser;
+    private Pacient pacient;
+
+    private Doctor doctor;
 
     private final static Scanner scanner = new Scanner(System.in);
 
-    private final UserManager userManager = new UserManagerImpl();
+    private final DoctorManager doctorManager = new DoctorManagerImpl();
 
-    private final BookManager bookManager = new BookManagerImpl();
+    private final DemandManager demandManager = new DemandManagerImpl();
 
-    public void start() {
+    private final PacientManager pacientManager = new PacientManagerImpl();
+
+
+    public void start(){
         welcomePage();
         String command = scanner.nextLine();
         switch (command) {
-            case "0" -> {
+            case "0": {
                 exit();
                 break;
             }
-            case "1" -> {
-                login();
+
+            case "1": {
+                loginAsDoctor();
                 break;
             }
-            case "2" -> {
-                register();
+            case "2": {
+                registerAsDoctor();
                 break;
             }
-            default -> {
+            case "3": {
+                loginAsPacient();
+                break;
+            }
+            case "4": {
+                registerAsPacient();
+                break;
+            }
+            default: {
+                start();
             }
         }
-
-
     }
 
-    private void register() {
+    private void registerAsPacient() {
         System.out.println("Input your email");
         String email = scanner.nextLine();
-        while (userManager.existByEmail(email)) {
+        while (pacientManager.existByEmail(email)) {
             System.out.println("Email already used");
             System.out.println("Input your email");
             email = scanner.nextLine();
@@ -71,7 +88,7 @@ public class Application {
         System.out.println("Input your age");
         int age = Integer.parseInt(scanner.nextLine());
 
-        currentUser = userManager.save(User.builder()
+        pacient = pacientManager.save(Pacient.builder()
                 .name(name)
                 .surname(surname)
                 .email(email)
@@ -79,81 +96,125 @@ public class Application {
                 .gender(Gender.valueOf(gender))
                 .age(age)
                 .build());
-        userHome();
-
+        pacientHome();
     }
 
-    private void login() {
+    private void registerAsDoctor() {
+        System.out.println("Input your email");
+        String email = scanner.nextLine();
+        while (doctorManager.existByEmail(email)) {
+            System.out.println("Email already used");
+            System.out.println("Input your email");
+            email = scanner.nextLine();
+        }
+
+        System.out.println("Input your name");
+        String name = scanner.nextLine();
+
+        System.out.println("Input your surname");
+        String surname = scanner.nextLine();
+
+        System.out.println("Input your password");
+        String password = scanner.nextLine();
+
+        while (true) {
+            System.out.println("Input your rest times 1 ");
+            System.out.println("Continue 2");
+            String command = scanner.nextLine();
+            switch (command){
+                case "1":{
+                    while (true){
+                        System.out.println("start hour");
+                        String s = scanner.nextLine();
+                        System.out.println("end hour");
+                        String e = scanner.nextLine();
+                        try {
+
+                            Time start = new Time(LocalDateTime.now().);
+                        }catch (Exception ex){
+                            System.out.println(ex.getMessage());
+                        }
+                    }
+                    doctorManager.setRestWorkTime(TimeInterval.builder()
+                            .doctorId(doctor.getId())
+                            .start(start)
+                            .end(end)
+                            .workStatus(WorkStatus.REST));
+                }
+                case "2":{
+                    doctor = doctorManager.save(Doctor.builder()
+                            .name(name)
+                            .surname(surname)
+                            .email(email)
+                            .password(password)
+                            .build());
+                    //doctorHome();
+                }
+            }
+        }
+    }
+
+    private void loginAsPacient() {
         System.out.println("Input your email");
         String email = scanner.nextLine();
 
         System.out.println("Input your password");
         String password = scanner.nextLine();
-        User currentUser = userManager.getByEmailAndPassword(email, password);
-        if (currentUser == null) {
+        pacient = pacientManager.getByEmailAndPassword(email, password);
+        if (pacient == null) {
             System.out.println("Incorrect email or password");
             start();
         } else {
-            this.currentUser = currentUser;
-            userHome();
-
+            pacientHome();
         }
     }
 
-    private void userHome() {
-        System.out.println("For logout press 1");
-        System.out.println("For add new book press 2");
-        System.out.println("For view books press 3");
-        System.out.println("For all books press 4");
+    private void loginAsDoctor() {
+        System.out.println("Input your email");
+        String email = scanner.nextLine();
+
+        System.out.println("Input your password");
+        String password = scanner.nextLine();
+        doctor = doctorManager.getByEmailAndPassword(email, password);
+        if (doctor == null) {
+            System.out.println("Incorrect email or password");
+            start();
+        } else {
+            //doctorHome();
+        }
+    }
+    private void pacientHome(){
+        pacientPage();
         String command = scanner.nextLine();
         switch (command) {
+            case "0": {
+                exit();
+                break;
+            }
+
             case "1": {
-                currentUser = null;
+                pacient = null;
                 start();
+                break;
             }
             case "2": {
-                addBook();
+                //doctorview();
+                break;
             }
             case "3": {
-                userBooks();
+                loginAsPacient();
+                break;
             }
             case "4": {
-                allBooks();
+                registerAsPacient();
+                break;
             }
-            default:{
-                userHome();
-
+            default: {
+                start();
             }
         }
     }
 
-    private void addBook(){
-        System.out.println("Book name");
-        String name = scanner.nextLine();
-        Date date = new Date();
-        Book book = bookManager.save(Book.builder()
-                .name(name)
-                .createdAt(new java.sql.Date(date.getTime()))
-                .author(currentUser)
-                .authorId(currentUser.getId())
-                .build(), currentUser);
-        System.out.println(book);
-        userHome();
-    }
-    private void allBooks(){
-        ArrayList<UserBookJoin> books = bookManager.getAllBooks();
-        for(UserBookJoin book: books){
-            System.out.println(book.toString());
-        }
-        userHome();
-    }
-    private void userBooks(){
-        ArrayList<Book> books = bookManager.getByUser(currentUser);
-        for(Book book: books){
-            System.out.println(book.toString());
-        }
-        userHome();
-    }
     private void exit() {
         System.out.println("By ... ");
         System.exit(0);
@@ -161,7 +222,17 @@ public class Application {
 
     private void welcomePage() {
         System.out.println("For exit press 0");
-        System.out.println("For login press 1.");
-        System.out.println("For registration press 2.");
+        System.out.println("For login as doctor 1");
+        System.out.println("For registration as doctor 2");
+        System.out.println("For login as pacient 3");
+        System.out.println("For registration as pacient 4");
     }
+
+    private void pacientPage() {
+        System.out.println("For exit press 0");
+        System.out.println("For logout 1.");
+        System.out.println("Doctor view 2");
+        System.out.println("For demands view 3");
+    }
+
 }

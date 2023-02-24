@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @ToString
 @SuperBuilder
-public class User extends Base {
+public class Doctor extends Base {
 
 
     private String name;
@@ -19,13 +19,5 @@ public class User extends Base {
 
     private String email;
     private String password;
-    private Integer age;
-    private Gender gender;
-
-
-
-    public boolean isTeenage(){
-        return this.age<18;
-    }
 
 }

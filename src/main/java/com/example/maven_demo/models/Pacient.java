@@ -1,5 +1,6 @@
 package com.example.maven_demo.models;
 
+import com.example.maven_demo.models.enums.Gender;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -11,12 +12,16 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @SuperBuilder
-public class Book extends Base{
+public class Pacient extends Base{
 
     private String name;
-    private Date   createdAt;
-    private User   author;
-    private int    authorId;
+    private String surname;
+
+    private String email;
+    private String password;
+
+    private Gender gender;
+    private int age;
 
 }
 
